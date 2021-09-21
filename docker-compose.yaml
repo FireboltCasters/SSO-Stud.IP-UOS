@@ -1,0 +1,10 @@
+version: '3'
+services:
+  backend:
+    build: Backend/app/server
+    command: npm run start
+    volumes:
+      - ./Backend/app/server:/usr/app/
+      - /usr/app/node_modules
+    ports:
+      - "3010:3010"

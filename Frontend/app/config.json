@@ -1,0 +1,20 @@
+{
+  "title": "Test",
+  "strapi": {
+    "url": "http://localhost:1337"
+  },
+  "codepush": {
+    "active": true,
+    "deploymentType": "staging",
+    "keys": {
+      "android": null,
+      "ios": {
+        "staging": "Pfw7jagN7fQ35MPBp68K-QwUQ5uoUQdVqqFEu",
+        "producation": "Dy6E3USWsKHWuwlkBCu-kolBiohYb8JQ-Yals"
+      }
+    }
+  },
+  "logs": {
+    "hideDefaultWarnings": true
+  }
+}

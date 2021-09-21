@@ -1,0 +1,7 @@
+[
+  "Tried to set property",
+  "If you do not provide children",
+  "Expected style",
+  "VirtualizedLists should never be nested",
+  "Warning: Each child in a list should have a unique \"key\" prop"
+]
