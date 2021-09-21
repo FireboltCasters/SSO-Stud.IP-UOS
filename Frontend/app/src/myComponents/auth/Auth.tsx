@@ -1,7 +1,7 @@
 import React from "react";
 import {Layout} from "../../components/Layout";
 import ScrollViewWithGradient from "../ScrollViewWithGradient";
-import Login from "./Login";
+import {Login} from "./Login";
 
 export default class Auth extends React.Component<any, any>{
 
@@ -21,7 +21,7 @@ export default class Auth extends React.Component<any, any>{
 
 	render() {
 		return(
-			<Layout>
+			<Layout title={"SSO für Stud.IP Uni-Osnabrück"}>
 				<ScrollViewWithGradient>
 					<Login params={this.state.params}/>
 				</ScrollViewWithGradient>

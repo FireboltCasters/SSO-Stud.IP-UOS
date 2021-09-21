@@ -1,8 +1,5 @@
 {
-  "title": "Test",
-  "strapi": {
-    "url": "http://localhost:1337"
-  },
+  "title": "SSO-Stud.IP Universität Osnabrück",
   "codepush": {
     "active": true,
     "deploymentType": "staging",

@@ -5,6 +5,6 @@ services:
     command: npm run start
     volumes:
       - ./Backend/app/server:/usr/app/
-      - /usr/app/node_modules
+      - ./Backend/app/server/node_modules:/usr/app/node_modules
     ports:
       - "3010:3010"

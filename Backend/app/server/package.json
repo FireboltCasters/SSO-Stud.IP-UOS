@@ -50,7 +50,8 @@
   },
   "dependencies": {
     "@babel/preset-typescript": "^7.14.5",
-    "sso-oauth2-server": "^0.0.5",
+    "cors": "^2.8.5",
+    "sso-oauth2-server": "^0.0.7",
     "studip-api": "^1.0.2"
   }
 }

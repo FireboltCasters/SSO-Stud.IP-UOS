@@ -2,10 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { Box, useColorModeValue, useToken } from 'native-base';
 import styleConfig from "./../../styleConfig.json"
-import Auth from "../myComponents/auth/Auth";
-import {MasonLayout} from "../screens";
 import {useColorMode} from "native-base/src/core/color-mode/hooks";
-import ColorModeWrapper from "./ColorModeWrapper";
 
 export const Root = (props) => {
 	const [lightBg, darkBg] = useToken(
@@ -25,7 +22,6 @@ export const Root = (props) => {
 	}
 
 	return (
-		<ColorModeWrapper colorMode={colorMode}>
 		<NavigationContainer
 			linking={linking}
 			theme={{
@@ -50,6 +46,5 @@ export const Root = (props) => {
 				{props.children}
 			</Box>
 		</NavigationContainer>
-		</ColorModeWrapper>
 	);
 };

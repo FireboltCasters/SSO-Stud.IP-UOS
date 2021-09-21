@@ -7,26 +7,12 @@ import ColorCodeManager from "./src/theme/ColorCodeManager";
 import BaseThemeGenerator from "./src/theme";
 import {RootStack} from "./src/navigators/rootNavigator";
 import {ColorStatusBar} from "./src/myComponents/ColorStatusBar";
-import Strapi from "strapi-sdk-js";
 import {useColorMode} from "native-base/src/core/color-mode/hooks";
 
 export default class App extends React.Component{
 
-	static strapi = null;
-	static strapiURL = config.strapi.url;
-
 	constructor(props) {
 		super(props);
-		const strapi = new Strapi({
-			url: process.env.STRAPI_URL || App.strapiURL,
-			store: {
-				key: "strapi_jwt",
-				useLocalStorage: false,
-				cookieOptions: { path: "/" },
-			},
-			axiosOptions: {},
-		})
-		App.strapi = strapi;
 	}
 
 	getBaseTheme(){

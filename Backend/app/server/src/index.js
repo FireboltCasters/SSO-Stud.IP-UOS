@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 import {SsoAuth2Server} from 'sso-oauth2-server';
 import {Connector, UrlHelper} from 'studip-api';
+import cors from "cors";
 
 const STUDIP_AUTH_METHOD = async (body, client_id, scope, query) => {
   console.log('Authentification: start');
@@ -27,7 +28,7 @@ const requiredLoginParams = {
   password: 'password',
 };
 
-const redirectMode = true;
+const redirectMode = false;
 const port = 3010;
 const route = '/studip';
 const sessionSecret = 'keyboard cat';
@@ -41,15 +42,6 @@ const ssoServer = new SsoAuth2Server(
   STUDIP_AUTH_METHOD,
   requiredLoginParams
 );
-
-let app = ssoServer.getExpressApp();
-const allowCrossDomain = function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', "*");
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-};
-app.use(allowCrossDomain);
 
 ssoServer.start();
 
