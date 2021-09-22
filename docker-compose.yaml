@@ -1,15 +1,45 @@
 version: '3'
 services:
+  backend:
+    build: Backend
+    command: npm run start
+    volumes:
+      - ./Backend/app:/usr/app/
+      - ./Backend/app/node_modules:/usr/app/node_modules
+    expose:
+      - ${BACKEND_PORT}
+  frontend:
+    env_file: .env
+    build: Frontend
+    command: npm run deploy:web:local
+    volumes:
+      - ./Frontend/app:/usr/app/
+      - ./Frontend/app/node_modules:/usr/app/node_modules
+    expose:
+      - ${FRONTEND_PORT}
+    environment:
+      DOMAIN_PATH: ${DOMAIN_PATH}
+      DOMAIN: ${DOMAIN}
+      BACKEND_PORT: ${BACKEND_PORT}
+      DOMAIN_BACKEND: ${DOMAIN_BACKEND}
+      DOMAIN_FRONTEND: ${DOMAIN_FRONTEND}
   nginx:
     container_name: nginx
     # to get latest nginx use:
     #image: nginx:stable
     image: nginx:1.20.1
+    depends_on:
+      - frontend
+      - backend
     volumes:
       - ${CERT_FOLDER_PATH}/fullchain.pem:/etc/certificates/fullchaim.pem
       - ${CERT_FOLDER_PATH}/privkey.pem:/etc/certificates/privkey.pem
       - ./Proxy/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./Proxy/nginx/httpProxy.conf:/etc/nginx/templates/proxy.conf.template
+      - ./Proxy/nginx/${DOMAIN_PRE}Proxy.conf:/etc/nginx/templates/proxy.conf.template
+      - ./Proxy/nginx/backendLocation.conf:/etc/nginx/templates/backendLocation.conf.template
+      - ./Proxy/nginx/backendUpstream.conf:/etc/nginx/templates/backendUpstream.conf.template
+      - ./Proxy/nginx/frontendLocation.conf:/etc/nginx/templates/frontendLocation.conf.template
+      - ./Proxy/nginx/frontendUpstream.conf:/etc/nginx/templates/frontendUpstream.conf.template
     env_file: .env
     environment:
       DOMAIN_PATH: ${DOMAIN_PATH}
@@ -19,7 +49,8 @@ services:
       DOMAIN_FRONTEND: ${DOMAIN_FRONTEND}
     restart: always
     ports:
-      - "192.168.178.35:80:80"
+      - 80:80
+      - 443:443
 
 networks:
   host:
