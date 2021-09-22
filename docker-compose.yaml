@@ -15,14 +15,11 @@ services:
     volumes:
       - ./Frontend/app:/usr/app/
       - ./Frontend/app/node_modules:/usr/app/node_modules
+      - ./Frontend/app/web-build:/usr/app/web-build
     expose:
       - ${FRONTEND_PORT}
     environment:
-      DOMAIN_PATH: ${DOMAIN_PATH}
-      DOMAIN: ${DOMAIN}
-      BACKEND_PORT: ${BACKEND_PORT}
-      DOMAIN_BACKEND: ${DOMAIN_BACKEND}
-      DOMAIN_FRONTEND: ${DOMAIN_FRONTEND}
+      BACKEND_URL: ${DOMAIN_PRE}://${DOMAIN}${DOMAIN_PATH}${DOMAIN_BACKEND}
   nginx:
     container_name: nginx
     # to get latest nginx use:
@@ -42,6 +39,7 @@ services:
       - ./Proxy/nginx/frontendUpstream.conf:/etc/nginx/templates/frontendUpstream.conf.template
     env_file: .env
     environment:
+      DOMAIN_PRE: ${DOMAIN_PRE}
       DOMAIN_PATH: ${DOMAIN_PATH}
       DOMAIN: ${DOMAIN}
       BACKEND_PORT: ${BACKEND_PORT}

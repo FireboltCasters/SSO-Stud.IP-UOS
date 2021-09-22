@@ -7,7 +7,6 @@ import ColorCodeManager from "./src/theme/ColorCodeManager";
 import BaseThemeGenerator from "./src/theme";
 import {RootStack} from "./src/navigators/rootNavigator";
 import {ColorStatusBar} from "./src/myComponents/ColorStatusBar";
-import {useColorMode} from "native-base/src/core/color-mode/hooks";
 
 export default class App extends React.Component{
 

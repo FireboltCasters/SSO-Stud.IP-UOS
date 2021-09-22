@@ -13,8 +13,6 @@ function capitalizeFirstLetter(string) {
 const UNI_ROT = "#AC0634";
 const MYUOS_GELB = "#fbb900";
 
-const BACKEND_URL = "http://192.168.178.35:3010"
-
 export const Login = (props) => {
 
 	const [authParams, setAuthParams] = useState({})
@@ -24,9 +22,14 @@ export const Login = (props) => {
 
 	const params = props.params;
 
+	function getBackendURL(){
+		let BACKEND_URL = process.env.APP_MANIFEST.extra.BACKEND_URL;
+		return BACKEND_URL;
+	}
+
 	async function fetchAuthParams(){
 		try{
-			let answer = await axios.get(BACKEND_URL+"/studip/authParams");
+			let answer = await axios.get(getBackendURL()+"/studip/authParams");
 			let data = answer.data.params;
 			setAuthParams(data);
 		} catch (e){
@@ -101,7 +104,7 @@ export const Login = (props) => {
 		console.log("Handle Login");
 		try{
 			let postData = getInputData();
-			let url = BACKEND_URL+"/studip/login";
+			let url = getBackendURL()+"/studip/login";
 			url+="?";
 			let paramKeys = Object.keys(params);
 			for(let paramKey of paramKeys){
