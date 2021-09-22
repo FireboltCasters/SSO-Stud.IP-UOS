@@ -1,5 +1,5 @@
 FROM node:12.18.1
 WORKDIR /usr/app
-COPY package.json .
+COPY ./* .
 RUN npm install
-EXPOSE 3010
+EXPOSE 19006

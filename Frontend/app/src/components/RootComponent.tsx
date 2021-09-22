@@ -13,11 +13,13 @@ export const Root = (props) => {
 	const bgColor = useColorModeValue(lightBg, darkBg);
 	const colorMode = useColorMode();
 
+	const subroute = "studip/app/";
+
 	const linking = {
-		prefixes: ['http://127.0.0.1:19006/'],
+		prefixes: ['nothing'],
 		config: {
-			"Home": "",
-			"Auth": "studip/login"
+			"Home": subroute+"home",
+			"Auth": subroute+"login"
 		}
 	}
 

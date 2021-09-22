@@ -101,13 +101,18 @@ export const Login = (props) => {
 		console.log("Handle Login");
 		try{
 			let postData = getInputData();
-			console.log(postData);
 			let url = BACKEND_URL+"/studip/login";
-			console.log(params);
-			url+="?client_id="+params.client_id+"&redirect_uri="+params.redirect_uri+"&response_type="+params.response_type+"&state="+params.state+"&scope="+params.scope;
-			console.log("Send AXIOS post to: "+url);
+			url+="?";
+			let paramKeys = Object.keys(params);
+			for(let paramKey of paramKeys){
+				let paramValue = params[paramKey];
+				url+=paramKey+"="+paramValue+"&"
+			}
+			if(url.endsWith("&")){
+				url = url.substring(0, url.length - 1);
+			}
+
 			let answer = await axios.post(url, postData);
-			console.log(answer);
 			let data = answer.data;
 			let redirectURL = data.redirectURL;
             window.location.href = redirectURL;

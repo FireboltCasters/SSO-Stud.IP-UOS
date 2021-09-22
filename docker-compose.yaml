@@ -1,10 +1,27 @@
 version: '3'
 services:
-  backend:
-    build: Backend/app/server
-    command: npm run start
+  nginx:
+    container_name: nginx
+    # to get latest nginx use:
+    #image: nginx:stable
+    image: nginx:1.20.1
     volumes:
-      - ./Backend/app/server:/usr/app/
-      - ./Backend/app/server/node_modules:/usr/app/node_modules
+      - ${CERT_FOLDER_PATH}/fullchain.pem:/etc/certificates/fullchaim.pem
+      - ${CERT_FOLDER_PATH}/privkey.pem:/etc/certificates/privkey.pem
+      - ./Proxy/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./Proxy/nginx/httpProxy.conf:/etc/nginx/templates/proxy.conf.template
+    env_file: .env
+    environment:
+      DOMAIN_PATH: ${DOMAIN_PATH}
+      DOMAIN: ${DOMAIN}
+      BACKEND_PORT: ${BACKEND_PORT}
+      DOMAIN_BACKEND: ${DOMAIN_BACKEND}
+      DOMAIN_FRONTEND: ${DOMAIN_FRONTEND}
+    restart: always
     ports:
-      - "3010:3010"
+      - "192.168.178.35:80:80"
+
+networks:
+  host:
+    name: host
+    external: true
