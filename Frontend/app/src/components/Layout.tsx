@@ -48,6 +48,7 @@ export const Layout = ({
 						md: 0,
 					},
 				}}
+
 				// style={{
 				// 	backdropFilter: 'blur(10px)',
 				// }}
