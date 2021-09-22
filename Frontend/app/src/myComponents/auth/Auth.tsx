@@ -2,6 +2,7 @@ import React from "react";
 import {Layout} from "../../components/Layout";
 import ScrollViewWithGradient from "../ScrollViewWithGradient";
 import {Login} from "./Login";
+import {Box, Text} from "native-base";
 
 export default class Auth extends React.Component<any, any>{
 
@@ -13,10 +14,6 @@ export default class Auth extends React.Component<any, any>{
 		this.state = {
 			params: params
 		}
-	}
-
-	async componentDidMount() {
-
 	}
 
 	render() {

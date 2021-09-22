@@ -1,12 +1,20 @@
 /* istanbul ignore file */
 import {SsoAuth2Server} from 'sso-oauth2-server';
 import {Connector, UrlHelper} from 'studip-api';
-import cors from "cors";
+
+const usernameLabel = "RZ-Kennung";
+const passwordLabel = "RZ-Password";
+
+const requiredLoginParams = {
+  [usernameLabel]: 'string',
+  [passwordLabel]: 'password',
+};
 
 const STUDIP_AUTH_METHOD = async (body, client_id, scope, query) => {
   console.log('Authentification: start');
-  const username = body.username;
-  const password = body.password;
+  const username = body[usernameLabel];
+  const password = body[passwordLabel];
+  console.log(body);
 
   const domain = UrlHelper.STUDIP_DOMAIN_UNI_OSNABRUECK;
 
@@ -21,11 +29,6 @@ const STUDIP_AUTH_METHOD = async (body, client_id, scope, query) => {
     console.log(err);
     throw new Error('Credentails incorrect');
   }
-};
-
-const requiredLoginParams = {
-  username: 'string',
-  password: 'password',
 };
 
 const redirectMode = false;

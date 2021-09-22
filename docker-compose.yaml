@@ -6,7 +6,7 @@ services:
     volumes:
       - ./Backend/app:/usr/app/
       - ./Backend/app/node_modules:/usr/app/node_modules
-    expose:
+    ports:
       - ${BACKEND_PORT}
   frontend:
     env_file: .env
