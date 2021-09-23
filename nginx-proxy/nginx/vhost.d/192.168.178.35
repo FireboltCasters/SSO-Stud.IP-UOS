@@ -1,0 +1,21 @@
+location /app1 {
+  proxy_pass http://app1:8000;
+}
+
+location /app2 {
+  resolver 127.0.0.11 valid=30s;
+  set $upstream_foo app2;
+  proxy_pass http://$upstream_foo:8000;
+}
+
+location /app3 {
+  resolver 127.0.0.11 valid=30s;
+  set $upstream_foo app3;
+  proxy_pass http://$upstream_foo:8000;
+}
+
+location /studip {
+  resolver 127.0.0.11 valid=30s;
+  set $upstream_foo innerProxy;
+  proxy_pass http://$upstream_foo:4000;
+}

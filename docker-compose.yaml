@@ -8,6 +8,8 @@ services:
       - ./Backend/app/node_modules:/usr/app/node_modules
     ports:
       - ${BACKEND_PORT}
+    networks:
+      - mycustomNetwork
   frontend:
     env_file: .env
     build: Frontend
@@ -20,8 +22,17 @@ services:
       - ${FRONTEND_PORT}
     environment:
       BACKEND_URL: ${DOMAIN_PRE}://${DOMAIN}${DOMAIN_PATH}${DOMAIN_BACKEND}
-  nginx:
-    container_name: nginx
+    networks:
+      - mycustomNetwork
+
+  app3:
+    image: jwilder/whoami
+    networks:
+      - mycustomNetwork
+      - nginx-proxy_reverse-proxy
+
+  innerProxy:
+    container_name: innerProxy
     # to get latest nginx use:
     #image: nginx:stable
     image: nginx:1.20.1
@@ -29,28 +40,27 @@ services:
       - frontend
       - backend
     volumes:
-      - ${CERT_FOLDER_PATH}/fullchain.pem:/etc/certificates/fullchaim.pem
-      - ${CERT_FOLDER_PATH}/privkey.pem:/etc/certificates/privkey.pem
-      - ./Proxy/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./Proxy/nginx/${DOMAIN_PRE}Proxy.conf:/etc/nginx/templates/proxy.conf.template
-      - ./Proxy/nginx/backendLocation.conf:/etc/nginx/templates/backendLocation.conf.template
-      - ./Proxy/nginx/backendUpstream.conf:/etc/nginx/templates/backendUpstream.conf.template
-      - ./Proxy/nginx/frontendLocation.conf:/etc/nginx/templates/frontendLocation.conf.template
-      - ./Proxy/nginx/frontendUpstream.conf:/etc/nginx/templates/frontendUpstream.conf.template
+      - ./InnerProxy/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./InnerProxy/nginx/httpProxy.conf:/etc/nginx/templates/proxy.conf.template
+      - ./InnerProxy/nginx/backendLocation.conf:/etc/nginx/templates/backendLocation.conf.template
+      - ./InnerProxy/nginx/backendUpstream.conf:/etc/nginx/templates/backendUpstream.conf.template
+      - ./InnerProxy/nginx/frontendLocation.conf:/etc/nginx/templates/frontendLocation.conf.template
+      - ./InnerProxy/nginx/frontendUpstream.conf:/etc/nginx/templates/frontendUpstream.conf.template
     env_file: .env
     environment:
-      DOMAIN_PRE: ${DOMAIN_PRE}
-      DOMAIN_PATH: ${DOMAIN_PATH}
       DOMAIN: ${DOMAIN}
+      DOMAIN_PATH: ${DOMAIN_PATH}
       BACKEND_PORT: ${BACKEND_PORT}
       DOMAIN_BACKEND: ${DOMAIN_BACKEND}
       DOMAIN_FRONTEND: ${DOMAIN_FRONTEND}
     restart: always
-    ports:
-      - 80:80
-      - 443:443
+    expose:
+      - "4000"
+    networks:
+      - mycustomNetwork
+      - nginx-proxy_reverse-proxy
 
 networks:
-  host:
-    name: host
+  mycustomNetwork:
+  nginx-proxy_reverse-proxy:
     external: true

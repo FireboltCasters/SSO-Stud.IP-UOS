@@ -11,18 +11,14 @@ const requiredLoginParams = {
 };
 
 const STUDIP_AUTH_METHOD = async (body, client_id, scope, query) => {
-  console.log('Authentification: start');
   const username = body[usernameLabel];
   const password = body[passwordLabel];
-  console.log(body);
 
   const domain = UrlHelper.STUDIP_DOMAIN_UNI_OSNABRUECK;
 
   try {
     const client = await Connector.getClient(domain, username, password);
     const user = client.getUser();
-    console.log('Authentification: success');
-    console.log(user);
     return user;
   } catch (err) {
     console.log('Authentification: error');

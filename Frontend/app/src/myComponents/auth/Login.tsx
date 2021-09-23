@@ -33,11 +33,10 @@ export const Login = (props) => {
 	const [checkboxValue, setCheckboxValue] = React.useState(false);
 	const [showScope, setShowScope] = React.useState(false);
 
-	const params = props.params;
+	const params = props.params || {};
 
 	function getBackendURL(){
 		let BACKEND_URL = process.env.APP_MANIFEST.extra.BACKEND_URL;
-		console.log("BACKEND_URL: "+BACKEND_URL);
 		return BACKEND_URL;
 	}
 
@@ -52,9 +51,7 @@ export const Login = (props) => {
 	}
 
 	function toggleShowParamKeyInput(nextValue, paramKey){
-		console.log("toggleShowParamKeyInput")
 		let currentValue = showPasswordParamKeys[paramKey];
-		console.log("currentValue: ",currentValue);
 		showPasswordParamKeys[paramKey] = !showPasswordParamKeys[paramKey]
 		setShowPasswordParamKeys(showPasswordParamKeys)
 		setReloadNumber(reloadNumber+1);
@@ -123,11 +120,9 @@ export const Login = (props) => {
 
 	async function handleLogin(){
 		//setLoginInProgress(true);
-		console.log("Handle Login");
 		try{
 			let postData = getInputData();
 			let url = getBackendURL()+"/studip/login";
-			console.log(postData);
 			url+="?";
 			let paramKeys = Object.keys(params);
 			for(let paramKey of paramKeys){
@@ -282,7 +277,6 @@ export const Login = (props) => {
 		fetchAuthParams();
 	}, [])
 
-	console.log("Render");
 	return(
 		<View {...props}>
 			<View style={{height: 200}} />
