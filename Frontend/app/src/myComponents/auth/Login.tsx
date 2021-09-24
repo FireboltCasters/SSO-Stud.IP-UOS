@@ -44,7 +44,9 @@ export const Login = (props) => {
 		try{
 			let answer = await axios.get(getBackendURL()+"/studip/authParams");
 			let data = answer.data.params;
-			setAuthParams(data);
+			if(!!data){
+				setAuthParams(data);
+			}
 		} catch (e){
 
 		}
