@@ -1,15 +1,27 @@
 version: '3'
 services:
-  backend:
-    build: Backend
-    command: npm run start
+
+  inner:
+    container_name: inner
+    env_file: .env
+    image: nginxproxy/nginx-proxy:dev
+    expose:
+      - "80"
+    restart: always
+    environment:
+      - DEFAULT_HOST=inner.bar.com
+      - VIRTUAL_HOST=outer.bar.com
+      - VIRTUAL_PATH=/studip/
+      - VIRTUAL_DEST=/
+    logging:
+      driver: local #or "none" or "local"
     volumes:
-      - ./Backend/app:/usr/app/
-      - ./Backend/app/node_modules:/usr/app/node_modules
-    ports:
-      - ${BACKEND_PORT}
+      - /var/run/docker.sock:/tmp/docker.sock:ro # allow to read running dockers
+      #- ./nginx/test:/etc/nginx/conf.d # to see the config output
     networks:
-      - mycustomNetwork
+      - topDomainProxy
+
+
   frontend:
     env_file: .env
     build: Frontend
@@ -21,46 +33,31 @@ services:
     expose:
       - ${FRONTEND_PORT}
     environment:
-      BACKEND_URL: ${DOMAIN_PRE}://${DOMAIN}${DOMAIN_PATH}${DOMAIN_BACKEND}
+      - BACKEND_URL=${DOMAIN_PRE}://${HOST}${DOMAIN_PATH}${BACKEND_PATH}
+      - VIRTUAL_HOST=inner.bar.com
+      - VIRTUAL_PATH=/app/
+      - VIRTUAL_DEST=/
+      - VIRTUAL_PORT=${FRONTEND_PORT}
     networks:
-      - mycustomNetwork
+      - topDomainProxy
 
-  app3:
-    image: jwilder/whoami
-    networks:
-      - mycustomNetwork
-      - nginx-proxy_reverse-proxy
-
-  innerProxy:
-    container_name: innerProxy
-    # to get latest nginx use:
-    #image: nginx:stable
-    image: nginx:1.20.1
-    depends_on:
-      - frontend
-      - backend
-    volumes:
-      - ./InnerProxy/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./InnerProxy/nginx/httpProxy.conf:/etc/nginx/templates/proxy.conf.template
-      - ./InnerProxy/nginx/backendLocation.conf:/etc/nginx/templates/backendLocation.conf.template
-      - ./InnerProxy/nginx/backendUpstream.conf:/etc/nginx/templates/backendUpstream.conf.template
-      - ./InnerProxy/nginx/frontendLocation.conf:/etc/nginx/templates/frontendLocation.conf.template
-      - ./InnerProxy/nginx/frontendUpstream.conf:/etc/nginx/templates/frontendUpstream.conf.template
+  backend:
+    build: Backend
     env_file: .env
+    command: npm run start
+    volumes:
+      - ./Backend/app:/usr/app/
+      - ./Backend/app/node_modules:/usr/app/node_modules
+    ports:
+      - ${BACKEND_PORT}
     environment:
-      DOMAIN: ${DOMAIN}
-      DOMAIN_PATH: ${DOMAIN_PATH}
-      BACKEND_PORT: ${BACKEND_PORT}
-      DOMAIN_BACKEND: ${DOMAIN_BACKEND}
-      DOMAIN_FRONTEND: ${DOMAIN_FRONTEND}
-    restart: always
-    expose:
-      - "4000"
+      - VIRTUAL_HOST=inner.bar.com
+      - VIRTUAL_PATH=/api/
+      - VIRTUAL_DEST=/
+      - VIRTUAL_PORT=${BACKEND_PORT}
     networks:
-      - mycustomNetwork
-      - nginx-proxy_reverse-proxy
+      - topDomainProxy
 
 networks:
-  mycustomNetwork:
-  nginx-proxy_reverse-proxy:
+  topDomainProxy:
     external: true

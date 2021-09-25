@@ -1,0 +1,35 @@
+version: '3'
+services:
+
+  app:
+    image: jwilder/whoami
+    container_name: innerApp
+    environment:
+      - VIRTUAL_HOST=192.168.178.35
+      - VIRTUAL_PATH=/studip/app
+    networks:
+      - mycustomNetwork
+
+  innerProxy:
+    image: nginxproxy/nginx-proxy:dev
+    container_name: innerProxyHostname
+    expose:
+      - "80"
+    restart: always
+    environment:
+      - VIRTUAL_HOST=192.168.178.35
+      - VIRTUAL_PATH=/studip
+    logging:
+      driver: local #or "none" or "local"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro # allow to read running dockers
+    networks:
+      - mycustomNetwork
+      - topDomainProxy
+
+
+
+networks:
+  mycustomNetwork:
+  topDomainProxy:
+    external: true

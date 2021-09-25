@@ -13,7 +13,7 @@ export const Root = (props) => {
 	const bgColor = useColorModeValue(lightBg, darkBg);
 	const colorMode = useColorMode();
 
-	const subroute = "studip/app/";
+	const subroute = "";
 
 	const linking = {
 		prefixes: ['nothing'],
