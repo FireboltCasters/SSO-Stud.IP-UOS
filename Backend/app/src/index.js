@@ -29,7 +29,7 @@ const STUDIP_AUTH_METHOD = async (body, client_id, scope, query) => {
 
 const redirectMode = false;
 const port = 3010;
-const route = '/studip';
+const route = '';
 const sessionSecret = 'keyboard cat';
 const jwtSecret = 'MySuperSecret';
 const ssoServer = new SsoAuth2Server(

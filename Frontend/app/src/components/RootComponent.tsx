@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { Box, useColorModeValue, useToken } from 'native-base';
 import styleConfig from "./../../styleConfig.json"
 import {useColorMode} from "native-base/src/core/color-mode/hooks";
+import EnviromentHelper from "../myComponents/EnviromentHelper";
 
 export const Root = (props) => {
 	const [lightBg, darkBg] = useToken(
@@ -11,12 +12,18 @@ export const Root = (props) => {
 		'blueGray.900',
 	);
 	const bgColor = useColorModeValue(lightBg, darkBg);
-	const colorMode = useColorMode();
 
-	const subroute = "";
+	let subroute = "";
+	try{
+		let basePath = EnviromentHelper.getBasePath();
+		subroute = basePath;
+	} catch (err){
+		console.log("Trying to get Basepath");
+		console.log(err)
+	}
 
 	const linking = {
-		prefixes: ['nothing'],
+		prefixes: ['nothing'], // i think this is needed, test in production !
 		config: {
 			"Home": subroute+"home",
 			"Auth": subroute+"login"

@@ -1,6 +1,7 @@
 export default {
     extra: {
         BACKEND_URL: process.env.BACKEND_URL || undefined,
+        BASE_PATH: process.env.BASE_PATH || "",
     },
         "name": "KitchenSink-app-native-base",
         "slug": "kitchensink-app-native-base",

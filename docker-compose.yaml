@@ -25,6 +25,7 @@ services:
   frontend:
     env_file: .env
     build: Frontend
+    #command: npm run web
     command: npm run deploy:web:local
     volumes:
       - ./Frontend/app:/usr/app/
@@ -32,12 +33,15 @@ services:
       - ./Frontend/app/web-build:/usr/app/web-build
     expose:
       - ${FRONTEND_PORT}
+      - 19006
     environment:
-      - BACKEND_URL=${DOMAIN_PRE}://${HOST}${DOMAIN_PATH}${BACKEND_PATH}
+      - BACKEND_URL=${DOMAIN_PRE}://${HOST}/${DOMAIN_PATH}/${BACKEND_PATH}
+      - BASE_PATH=${DOMAIN_PATH}/${FRONTEND_PATH}/
       - VIRTUAL_HOST=inner.bar.com
-      - VIRTUAL_PATH=/app/
+      - VIRTUAL_PATH=/${FRONTEND_PATH}/
       - VIRTUAL_DEST=/
       - VIRTUAL_PORT=${FRONTEND_PORT}
+      #- VIRTUAL_PORT=19006
     networks:
       - topDomainProxy
 
@@ -52,7 +56,7 @@ services:
       - ${BACKEND_PORT}
     environment:
       - VIRTUAL_HOST=inner.bar.com
-      - VIRTUAL_PATH=/api/
+      - VIRTUAL_PATH=/${BACKEND_PATH}/
       - VIRTUAL_DEST=/
       - VIRTUAL_PORT=${BACKEND_PORT}
     networks:

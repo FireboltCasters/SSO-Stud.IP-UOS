@@ -42,7 +42,7 @@ export const Login = (props) => {
 
 	async function fetchAuthParams(){
 		try{
-			let answer = await axios.get(getBackendURL()+"/studip/authParams");
+			let answer = await axios.get(getBackendURL()+"/authParams");
 			let data = answer.data.params;
 			if(!!data){
 				setAuthParams(data);
@@ -124,7 +124,7 @@ export const Login = (props) => {
 		//setLoginInProgress(true);
 		try{
 			let postData = getInputData();
-			let url = getBackendURL()+"/studip/login";
+			let url = getBackendURL()+"/login";
 			url+="?";
 			let paramKeys = Object.keys(params);
 			for(let paramKey of paramKeys){

@@ -8,8 +8,6 @@ export default class Auth extends React.Component<any, any>{
 
 	constructor(props) {
 		super(props);
-		console.log("PROPS");
-		console.log(props);
 		const params = props.route.params;
 		this.state = {
 			params: params
