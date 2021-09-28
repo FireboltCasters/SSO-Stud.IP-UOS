@@ -8,6 +8,7 @@ export const Floaters = () => {
 	const { colorMode, toggleColorMode } = useColorMode();
 
 	const renderedFab = <Fab
+		key={"FabKey"}
 		shadow={7}
 		variant="unstyled"
 		_dark={{
@@ -62,6 +63,8 @@ export const Floaters = () => {
 	];
 
 	return (
-		renderedContent
+		<>
+			{renderedContent}
+		</>
 	);
 };

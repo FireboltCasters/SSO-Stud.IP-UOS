@@ -2,14 +2,14 @@ version: '3'
 services:
 
   inner:
-    container_name: inner
+    container_name: ${DOMAIN_PATH}inner
     env_file: .env
     image: nginxproxy/nginx-proxy:dev
     expose:
       - "80"
     restart: always
     environment:
-      - DEFAULT_HOST=inner.bar.com
+      - DEFAULT_HOST=${DOMAIN_PATH}.com
       - VIRTUAL_HOST=outer.bar.com
       - VIRTUAL_PATH=/studip/
       - VIRTUAL_DEST=/
@@ -37,7 +37,7 @@ services:
     environment:
       - BACKEND_URL=${DOMAIN_PRE}://${HOST}/${DOMAIN_PATH}/${BACKEND_PATH}
       - BASE_PATH=${DOMAIN_PATH}/${FRONTEND_PATH}/
-      - VIRTUAL_HOST=inner.bar.com
+      - VIRTUAL_HOST=${DOMAIN_PATH}.com
       - VIRTUAL_PATH=/${FRONTEND_PATH}/
       - VIRTUAL_DEST=/
       - VIRTUAL_PORT=${FRONTEND_PORT}
@@ -55,7 +55,7 @@ services:
     ports:
       - ${BACKEND_PORT}
     environment:
-      - VIRTUAL_HOST=inner.bar.com
+      - VIRTUAL_HOST=${DOMAIN_PATH}.com
       - VIRTUAL_PATH=/${BACKEND_PATH}/
       - VIRTUAL_DEST=/
       - VIRTUAL_PORT=${BACKEND_PORT}
