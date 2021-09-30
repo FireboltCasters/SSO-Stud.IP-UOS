@@ -22,6 +22,18 @@ services:
       - topDomainProxy
 
 
+  app:
+    env_file: .env
+    image: jwilder/whoami
+    environment:
+      - VIRTUAL_HOST=${DOMAIN_PATH}.com
+      - VIRTUAL_PATH=/whoami
+      - VIRTUAL_DEST=/
+    networks:
+      - topDomainProxy
+
+
+
   frontend:
     env_file: .env
     build: Frontend
@@ -29,8 +41,8 @@ services:
     command: npm run deploy:web:local
     volumes:
       - ./Frontend/app:/usr/app/
-      - ./Frontend/app/node_modules:/usr/app/node_modules
-      - ./Frontend/app/web-build:/usr/app/web-build
+      #- ./Frontend/app/node_modules:/usr/app/node_modules
+      #- ./Frontend/app/web-build:/usr/app/web-build
     expose:
       - ${FRONTEND_PORT}
       - 19006
@@ -51,7 +63,8 @@ services:
     command: npm run start
     volumes:
       - ./Backend/app:/usr/app/
-      - ./Backend/app/node_modules:/usr/app/node_modules
+      #- ./Backend/app/build:/usr/app/build
+      #- ./Backend/app/node_modules:/usr/app/node_modules
     ports:
       - ${BACKEND_PORT}
     environment:

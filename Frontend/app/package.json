@@ -7,14 +7,15 @@
 		"ios": "react-native run-ios",
 		"deploy:ios": "appcenter codepush release-react -a FireboltCasters/Raiders-of-Storm-iOS --plist-file ./ios/KitchenSinkappnativebase/Info.plist -m -t '*'",
 		"web": "expo start --web",
-		"build:web": "expo build:web --no-pwa",
-		"build:web:pwa": "expo build:web",
-		"predeploy:web:local": "npm run build:web",
+		"build:web": "npm run clean && npx expo build:web --no-pwa",
+		"build:web:pwa": "npm run clean && expo build:web",
+		"predeploy:web:local": "ls -a && npm install && npm run build:web",
 		"deploy:web:local": "npm run serve:web:local",
 		"serve:web:local": "npx serve web-build --cors --single",
 		"eject": "expo eject",
 		"deploy:web": "rm -rf node_modules/.cache/gh-pages && gh-pages -d web-build",
-		"predeploy:web": "npm run build:web:pwa"
+		"predeploy:web": "npm run build:web:pwa",
+		"clean": "rm -rf web-build"
 	},
 	"dependencies": {
 		"@react-native-async-storage/async-storage": "^1.15.7",

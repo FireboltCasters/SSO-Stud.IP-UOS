@@ -1,5 +1,5 @@
-FROM node:12.18.1
+FROM node:14.15.4
 WORKDIR /usr/app
-COPY app/package.json .
-RUN npm install
+COPY ./* ./
+RUN ls && npm install
 EXPOSE 3010
