@@ -42,5 +42,8 @@ const ssoServer = new SsoAuth2Server(
   requiredLoginParams
 );
 
+console.log("Register Public SSO");
+ssoServer.registerService("public", "sso_consumer", "l1Q7zkOL59cRqWBkQ12ZiGVW2DBL");
+
 ssoServer.start();
 
