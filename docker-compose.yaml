@@ -1,34 +1,13 @@
 version: '3'
 services:
 
-#  inner:
-#    container_name: ${DOMAIN_PATH}inner
-#    env_file: .env
-#    image: nginxproxy/nginx-proxy:dev
-#    expose:
-#      - "80"
-#    restart: always
-#    environment:
-#      - DEFAULT_HOST=${DOMAIN_PATH}.com
-#      - VIRTUAL_HOST=outer.bar.com
-#      - VIRTUAL_PATH=/studip/
-#      - VIRTUAL_DEST=/
-#    logging:
-#      driver: local #or "none" or "local"
-#    volumes:
-#      - /var/run/docker.sock:/tmp/docker.sock:ro # allow to read running dockers
-#      #- ./nginx/test:/etc/nginx/conf.d # to see the config output
-#    networks:
-#      - topDomainProxy
-
-
   app:
     env_file: .env
     image: jwilder/whoami
     environment:
       #- VIRTUAL_HOST=${DOMAIN_PATH}.com
       #- VIRTUAL_PATH=/whoami
-      - VIRTUAL_HOST=se-services.informatik.uos.de
+      - VIRTUAL_HOST=${HOST}
       - VIRTUAL_PATH=/${DOMAIN_PATH}/whoamni
       - VIRTUAL_DEST=/
     networks:
@@ -40,7 +19,7 @@ services:
     env_file: .env
     build: Frontend
     #command: npm run web
-    command: npm run deploy:web:local
+    command: npm run web
     volumes:
       - ./Frontend/app:/usr/app/
       #- ./Frontend/app/node_modules:/usr/app/node_modules

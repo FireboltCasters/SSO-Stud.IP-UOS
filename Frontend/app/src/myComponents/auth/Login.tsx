@@ -42,10 +42,15 @@ export const Login = (props) => {
 
 	async function fetchAuthParams(){
 		try{
-			let answer = await axios.get(getBackendURL()+"/authParams");
-			let data = answer.data.params;
-			if(!!data){
-				setAuthParams(data);
+			let debug = false;
+			if(debug){
+				setAuthParams({"RZ-Kennung":"string","RZ-Password":"password"});
+			} else {
+				let answer = await axios.get(getBackendURL()+"/authParams");
+				let data = answer.data.params;
+				if(!!data){
+					setAuthParams(data);
+				}
 			}
 		} catch (e){
 
