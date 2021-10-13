@@ -49,8 +49,9 @@ export const Root = (props) => {
 				}}
 				// bg={useColorModeValue('', 'blueGray.900')}
 				_web={{
-					overflowX: 'hidden',
+					// overflowX: 'hidden', // causes in Firefox unter Windows 10 shaking
 				}}
+				style={{height: "100%", width: "100%"}}
 			>
 				{props.children}
 			</Box>
