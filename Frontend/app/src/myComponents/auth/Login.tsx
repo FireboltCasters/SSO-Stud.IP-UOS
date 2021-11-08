@@ -25,6 +25,7 @@ function capitalizeFirstLetter(string) {
 
 export const Login = (props) => {
 
+	const markerRef = React.createRef();
 	const [authParams, setAuthParams] = useState({})
 	const [showPasswordParamKeys, setShowPasswordParamKeys] = useState({})
 	const [loginInProgress, setLoginInProgress] = useState(false)
@@ -33,7 +34,11 @@ export const Login = (props) => {
 	const [checkboxValue, setCheckboxValue] = React.useState(false);
 	const [showScope, setShowScope] = React.useState(false);
 
+
 	const params = props.params || {};
+
+	console.log("Login: ");
+	console.log(params);
 
 	function getBackendURL(){
 		let BACKEND_URL = process.env.APP_MANIFEST.extra.BACKEND_URL;
@@ -42,9 +47,9 @@ export const Login = (props) => {
 
 	async function fetchAuthParams(){
 		try{
-			let debug = false;
+			let debug = true;
 			if(debug){
-				setAuthParams({"RZ-Kennung":"string","RZ-Password":"password"});
+				setAuthParams({"username":"string","password":"password"});
 			} else {
 				let answer = await axios.get(getBackendURL()+"/authParams");
 				let data = answer.data.params;
@@ -68,6 +73,7 @@ export const Login = (props) => {
 		const value = event.target.value;
 		inputvalues[paramKey] = value;
 		setInputvalues(inputvalues);
+		setReloadNumber(reloadNumber+1);
 	}
 
 	function renderAuthParamForm(paramKey, paramType){
@@ -129,26 +135,42 @@ export const Login = (props) => {
 		//setLoginInProgress(true);
 		try{
 			let postData = getInputData();
-			let url = getBackendURL()+"/login";
-			url+="?";
-			let paramKeys = Object.keys(params);
-			for(let paramKey of paramKeys){
-				let paramValue = params[paramKey];
-				url+=paramKey+"="+paramValue+"&"
-			}
-			if(url.endsWith("&")){
-				url = url.substring(0, url.length - 1);
-			}
+			//let url = getBackendURL()+"/oauth/authorize";
 
-			let answer = await axios.post(url, postData);
-			let data = answer.data;
-			let redirectURL = data.redirectURL;
-            window.location.href = redirectURL;
-			//useHistory(redirectURL);
+			let form = markerRef.current;
+			form.submit();
 		} catch (e){
 			console.log(e);
 		}
 		setLoginInProgress(false);
+	}
+
+	function renderInvisibleForm(){
+		let url = "http://192.168.178.35/studip/api/oauth/authorize";
+
+		let inputs = [];
+		let paramKeys = Object.keys(params);
+		for(let paramKey of paramKeys){
+			let paramValue = params[paramKey];
+			inputs.push(<input className='form-control' name={paramKey} value={paramValue}/>)
+		}
+
+		let authParamKeys = Object.keys(inputvalues);
+		console.log("authParams: ");
+		console.log(inputvalues);
+		for(let authParamKey of authParamKeys){
+			let paramValue = inputvalues[authParamKey];
+			inputs.push(<input className='form-control' name={authParamKey} value={paramValue}/>)
+		}
+
+		return(
+			<div key={reloadNumber}>
+				<form ref={markerRef} action={url} method="post">
+					{inputs}
+					<input type='submit' className='btn btn-success'/>
+				</form>
+			</div>
+		)
 	}
 
 	function renderLoginButton(paramsLoaded){
@@ -157,6 +179,7 @@ export const Login = (props) => {
 		const diabled = !checkboxValue || !paramsLoaded;
 
 		return <Box w="100%">
+			{renderInvisibleForm()}
 			<Button
 				isDisabled={diabled}
 				isLoading={loginInProgress} isLoadingText="Bearbeiten"

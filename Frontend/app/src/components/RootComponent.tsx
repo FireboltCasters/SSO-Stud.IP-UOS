@@ -32,6 +32,7 @@ export const Root = (props) => {
 
 	return (
 		<NavigationContainer
+			key={"NavigationContainer"}
 			linking={linking}
 			theme={{
 				// @ts-ignore
@@ -39,8 +40,6 @@ export const Root = (props) => {
 			}}
 		>
 			<Box
-				flex={1}
-				w="100%"
 				_light={{
 					bg: 'coolGray.50',
 				}}

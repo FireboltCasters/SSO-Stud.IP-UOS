@@ -8,7 +8,7 @@ services:
       #- VIRTUAL_HOST=${DOMAIN_PATH}.com
       #- VIRTUAL_PATH=/whoami
       - VIRTUAL_HOST=${HOST}
-      - VIRTUAL_PATH=/${DOMAIN_PATH}/whoamni
+      - VIRTUAL_PATH=/${DOMAIN_PATH}/whoami
       - VIRTUAL_DEST=/
     networks:
       - topDomainProxy
@@ -19,7 +19,7 @@ services:
     env_file: .env
     build: Frontend
     #command: npm run web
-    command: npm run web
+    command: npm run deploy:web:local
     volumes:
       - ./Frontend/app:/usr/app/
       #- ./Frontend/app/node_modules:/usr/app/node_modules
@@ -30,8 +30,6 @@ services:
     environment:
       - BACKEND_URL=${DOMAIN_PRE}://${HOST}/${DOMAIN_PATH}/${BACKEND_PATH}
       - BASE_PATH=${DOMAIN_PATH}/${FRONTEND_PATH}/
-      #- VIRTUAL_HOST=${DOMAIN_PATH}.com
-      #- VIRTUAL_PATH=/${FRONTEND_PATH}/
       - VIRTUAL_HOST=${HOST}
       - VIRTUAL_PATH=/${DOMAIN_PATH}/${FRONTEND_PATH}/
       - VIRTUAL_DEST=/

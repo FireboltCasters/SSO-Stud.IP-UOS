@@ -9,7 +9,7 @@
 		"web": "expo start --web",
 		"build:web": "npm run clean && npx expo build:web --no-pwa",
 		"build:web:pwa": "npm run clean && expo build:web",
-		"predeploy:web:local": "ls -a && npm install && npm run build:web",
+		"predeploy:web:local": "ls -a && echo 'predeploy run npm install' && npm install --verbose && echo 'predeploy build web' && npm run build:web && echo 'predeploy finished'",
 		"deploy:web:local": "npm run serve:web:local",
 		"serve:web:local": "npx serve web-build --cors --single",
 		"eject": "expo eject",
