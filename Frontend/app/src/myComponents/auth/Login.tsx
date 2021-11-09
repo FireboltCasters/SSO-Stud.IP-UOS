@@ -3,14 +3,15 @@ import {
 	Box,
 	Button,
 	Checkbox,
-	CircleIcon,
+	CircleIcon, FormControl,
 	Icon,
 	Input,
 	Modal,
 	Pressable, Skeleton,
 	Text,
 	useColorModeValue,
-	View
+	View,
+    WarningOutlineIcon
 } from "native-base";
 import App from "../../../App";
 import axios from "axios";
@@ -33,6 +34,7 @@ export const Login = (props) => {
 	const [reloadNumber, setReloadNumber] = React.useState(0);
 	const [checkboxValue, setCheckboxValue] = React.useState(false);
 	const [showScope, setShowScope] = React.useState(false);
+	const [showDebug, setShowDebug] = React.useState(false);
 
 
 	const params = props.params || {};
@@ -51,7 +53,7 @@ export const Login = (props) => {
 			if(debug){
 				setAuthParams({"username":"string","password":"password"});
 			} else {
-				let answer = await axios.get(getBackendURL()+"/authParams");
+				let answer = await axios.get(getBackendURL()+"/oauth/authParams");
 				let data = answer.data.params;
 				if(!!data){
 					setAuthParams(data);
@@ -100,24 +102,31 @@ export const Login = (props) => {
 
 
 		return <Box w="100%">
-			<ThemeInputText
-				key={"ParamInputForKey:"+paramKey}
-				InputLeftElement={
-					<Icon
-						as={<MaterialIcons name={icon} />}
-						size="md"
-						m={2}
-						color={'gray.300'}
-					/>
-				}
-				nativeID={nativeId}
-				placeholder={paramKeyAsName}
-				// mx={4}
-				value={inputvalues[paramKey]}
-				onChange={handleChangeInputValue.bind(null, paramKey)}
-				InputRightElement={rightElement}
-				type={show ? "text" : "password"}
-			/>
+			<FormControl
+				isInvalid={params.success==="false"}
+			>
+				<ThemeInputText
+					key={"ParamInputForKey:"+paramKey}
+					InputLeftElement={
+						<Icon
+							as={<MaterialIcons name={icon} />}
+							size="md"
+							m={2}
+							color={'gray.300'}
+						/>
+					}
+					nativeID={nativeId}
+					placeholder={paramKeyAsName}
+					// mx={4}
+					value={inputvalues[paramKey]}
+					onChange={handleChangeInputValue.bind(null, paramKey)}
+					InputRightElement={rightElement}
+					type={show ? "text" : "password"}
+				/>
+				<FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
+					Incorrect
+				</FormControl.ErrorMessage>
+			</FormControl>
 		</Box>;
 	}
 
@@ -146,7 +155,8 @@ export const Login = (props) => {
 	}
 
 	function renderInvisibleForm(){
-		let url = "http://192.168.178.35/studip/api/oauth/authorize";
+		let backend = getBackendURL();
+		let url = backend+"/oauth/authorize";
 
 		let inputs = [];
 		let paramKeys = Object.keys(params);
@@ -164,7 +174,7 @@ export const Login = (props) => {
 		}
 
 		return(
-			<div key={reloadNumber}>
+			<div key={reloadNumber} style={{display: "none"}}>
 				<form ref={markerRef} action={url} method="post">
 					{inputs}
 					<input type='submit' className='btn btn-success'/>

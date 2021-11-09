@@ -24,23 +24,6 @@ const allowCrossDomain = (req, res, next) => {
   }
 }
 
-const STUDIP_AUTH_METHOD = async (body, client_id, scope, query) => {
-  const username = body[usernameLabel];
-  const password = body[passwordLabel];
-
-  const domain = UrlHelper.STUDIP_DOMAIN_UNI_OSNABRUECK;
-
-  try {
-    const client = await Connector.getClient(domain, username, password);
-    const user = client.getUser();
-    return user;
-  } catch (err) {
-    console.log('Authentification: error');
-    console.log(err);
-    throw new Error('Credentails incorrect');
-  }
-};
-
 const express = require('express')
 
 const app = express()
@@ -60,6 +43,13 @@ app.use(DebugControl.log.request())
 app.use('/profile', oauthServer.authenticate(), require('./routes/profile.js')) // routes to access the protected stuff
 app.use('/oauth', require('./routes/auth.js')) // routes to access the auth stuff
 // Note that the next router uses middleware. That protects all routes within this middleware
+
+
+let FRONTEND_URL = process.env.FRONTEND_URL;
+console.log("FRONTEND_URL: ",FRONTEND_URL);
+
+let REDIRECT_URIS = process.env.REDIRECT_URIS;
+console.log("REDIRECT_URIS: ",REDIRECT_URIS);
 
 app.listen(port)
 console.log("Oauth Server listening on port ", port)

@@ -34,11 +34,19 @@ module.exports = {
         { name: 'clientSecret', value: clientSecret },
       ]
     })
+    let REDIRECT_URIS = process.env.REDIRECT_URIS || null;
+
+    let redirectUris = [];
+    if(!!REDIRECT_URIS){
+      redirectUris.push(REDIRECT_URIS);
+    }
+    console.log("REDIRECT_URIS: ",REDIRECT_URIS);
+
     db.client = { // Retrieved from the database
       clientId: clientId,
       clientSecret: clientSecret,
       grants: ['authorization_code', 'refresh_token'],
-      redirectUris: ['http://se-services.informatik.uos.de/raiders/api/auth/login/adobe/callback', 'http://192.168.178.35/myapp/api/auth/login/adobe/callback'],
+      redirectUris: redirectUris ,
     }
     return new Promise(resolve => {
       resolve(db.client)

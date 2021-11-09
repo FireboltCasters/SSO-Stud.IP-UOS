@@ -49,6 +49,8 @@ services:
     ports:
       - ${BACKEND_PORT}
     environment:
+      - REDIRECT_URIS=${REDIRECT_URIS}
+      - FRONTEND_URL=${DOMAIN_PRE}://${HOST}/${DOMAIN_PATH}/${FRONTEND_PATH}
       #- VIRTUAL_HOST=${DOMAIN_PATH}.com
       #- VIRTUAL_PATH=/${BACKEND_PATH}/
       - VIRTUAL_HOST=${HOST}
