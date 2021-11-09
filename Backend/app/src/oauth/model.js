@@ -20,6 +20,10 @@ const db = { // Here is a fast overview of what your db model should look like
     client: null, // Client associated with this token
     user: null, // User associated with this token
   },
+  //TODO do i need to save each token individual?
+  tokens: {},
+  clients: {},
+  authorizationCodes: {}
 }
 
 const DebugControl = require('../utilities/debug.js')
@@ -34,18 +38,18 @@ module.exports = {
         { name: 'clientSecret', value: clientSecret },
       ]
     })
-    let REDIRECT_URIS = process.env.REDIRECT_URIS || null;
 
-    let redirectUris = [];
-    if(!!REDIRECT_URIS){
-      redirectUris.push(REDIRECT_URIS);
-    }
-    console.log("REDIRECT_URIS: ",REDIRECT_URIS);
+    let clientIdUppercase = clientId.toUpperCase();
+    let REDIRECT_URIS = process.env["CLIENT_"+clientIdUppercase+"_REDICRECT_URIS"] || "";
+    let redirectUris = REDIRECT_URIS.split(",");
+    let GRANTS = process.env["CLIENT_"+clientIdUppercase+"_GRANTS"] || "";
+    let grants = GRANTS.split(",");
+    let secret = process.env["CLIENT_"+clientIdUppercase+"_SECRET"] || "";
 
     db.client = { // Retrieved from the database
       clientId: clientId,
-      clientSecret: clientSecret,
-      grants: ['authorization_code', 'refresh_token'],
+      clientSecret: secret,
+      grants: grants,
       redirectUris: redirectUris ,
     }
     return new Promise(resolve => {

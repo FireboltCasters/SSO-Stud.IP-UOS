@@ -1,15 +1,5 @@
 /* istanbul ignore file */
-import {SsoAuth2Server} from 'sso-oauth2-server';
-import {Connector, UrlHelper} from 'studip-api';
 import cors from 'cors';
-
-const usernameLabel = "RZ-Kennung";
-const passwordLabel = "RZ-Password";
-
-const requiredLoginParams = {
-  [usernameLabel]: 'string',
-  [passwordLabel]: 'password',
-};
 
 const allowCrossDomain = (req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -43,13 +33,6 @@ app.use(DebugControl.log.request())
 app.use('/profile', oauthServer.authenticate(), require('./routes/profile.js')) // routes to access the protected stuff
 app.use('/oauth', require('./routes/auth.js')) // routes to access the auth stuff
 // Note that the next router uses middleware. That protects all routes within this middleware
-
-
-let FRONTEND_URL = process.env.FRONTEND_URL;
-console.log("FRONTEND_URL: ",FRONTEND_URL);
-
-let REDIRECT_URIS = process.env.REDIRECT_URIS;
-console.log("REDIRECT_URIS: ",REDIRECT_URIS);
 
 app.listen(port)
 console.log("Oauth Server listening on port ", port)

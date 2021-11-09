@@ -73,14 +73,13 @@ router.post('/authorize', async (req,res,next) => {
 
   try{
     let user = await AUTH_METHOD(username, password);
-    console.log(user);
     req.body.user = user;
     return next()
   } catch (err){
     console.log(err);
   }
 
-  return res.redirect(FRONTEND_URL`/login?success=false&${params}`)
+  return res.redirect(FRONTEND_URL+`/login?success=false&${params}`)
 
 }, (req,res, next) => { // sends us to our redirect with an authorization code in our url
   DebugControl.log.flow('Authorization')

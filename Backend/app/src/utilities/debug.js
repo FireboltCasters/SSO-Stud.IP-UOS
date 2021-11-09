@@ -5,7 +5,7 @@ const levels = {
   HIGH: 3,
 }
 
-let level = levels.HIGH
+let level = levels.NONE
 
 module.exports = {
   levels,
