@@ -24,11 +24,8 @@ services:
     command: npm run deploy:web:local
     volumes:
       - ./Frontend/app:/usr/app/
-      #- ./Frontend/app/node_modules:/usr/app/node_modules
-      #- ./Frontend/app/web-build:/usr/app/web-build
     expose:
       - ${FRONTEND_PORT}
-      - 19006
     environment:
       - BACKEND_URL=${DOMAIN_PRE}://${HOST}/${DOMAIN_PATH}/${BACKEND_PATH}
       - BASE_PATH=${DOMAIN_PATH}/${FRONTEND_PATH}/
@@ -36,6 +33,7 @@ services:
       - VIRTUAL_PATH=/${DOMAIN_PATH}/${FRONTEND_PATH}/
       - VIRTUAL_DEST=/
       - VIRTUAL_PORT=${FRONTEND_PORT}
+      - PORT=${FRONTEND_PORT}
     networks:
       - topDomainProxy
 
@@ -49,7 +47,6 @@ services:
     ports:
       - ${BACKEND_PORT}
     environment:
-      - REDIRECT_URIS=${REDIRECT_URIS}
       - FRONTEND_URL=${DOMAIN_PRE}://${HOST}/${DOMAIN_PATH}/${FRONTEND_PATH}
       - VIRTUAL_HOST=${HOST}
       - VIRTUAL_PATH=/${DOMAIN_PATH}/${BACKEND_PATH}/
