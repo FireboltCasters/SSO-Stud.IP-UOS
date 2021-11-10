@@ -3,6 +3,7 @@ services:
 
   app:
     env_file: .env
+    restart: ${RESTART}
     image: jwilder/whoami
     environment:
       #- VIRTUAL_HOST=${DOMAIN_PATH}.com
@@ -17,6 +18,7 @@ services:
 
   frontend:
     env_file: .env
+    restart: ${RESTART}
     build: Frontend
     #command: npm run web
     command: npm run deploy:web:local
@@ -34,25 +36,21 @@ services:
       - VIRTUAL_PATH=/${DOMAIN_PATH}/${FRONTEND_PATH}/
       - VIRTUAL_DEST=/
       - VIRTUAL_PORT=${FRONTEND_PORT}
-      #- VIRTUAL_PORT=19006
     networks:
       - topDomainProxy
 
   backend:
     build: Backend
     env_file: .env
+    restart: ${RESTART}
     command: npm run start
     volumes:
       - ./Backend/app:/usr/app/
-      #- ./Backend/app/build:/usr/app/build
-      #- ./Backend/app/node_modules:/usr/app/node_modules
     ports:
       - ${BACKEND_PORT}
     environment:
       - REDIRECT_URIS=${REDIRECT_URIS}
       - FRONTEND_URL=${DOMAIN_PRE}://${HOST}/${DOMAIN_PATH}/${FRONTEND_PATH}
-      #- VIRTUAL_HOST=${DOMAIN_PATH}.com
-      #- VIRTUAL_PATH=/${BACKEND_PATH}/
       - VIRTUAL_HOST=${HOST}
       - VIRTUAL_PATH=/${DOMAIN_PATH}/${BACKEND_PATH}/
       - VIRTUAL_DEST=/
