@@ -46,6 +46,18 @@ module.exports = {
     let grants = GRANTS.split(",");
     let secret = process.env["CLIENT_"+clientIdUppercase+"_SECRET"] || "";
 
+    // Since wildcards are not allowed/implemented
+    // https://github.com/oauthjs/node-oauth2-server/issues/229
+    // we will make a small hack, to allow for ourself redirects
+    const clientSecretRedirecrtSplit = "&redirect=";
+    if(clientSecret.includes(clientSecretRedirecrtSplit)){ //check if our split word is found
+      let splits = clientSecret.split(clientSecretRedirecrtSplit); //split there
+      let filteredMeantSecret = splits[0]; //get the meant secret
+      clientSecret = filteredMeantSecret;
+      let filteredMeantRedirectURL = splits[1]; //get the redirect url we want
+      redirectUris = [filteredMeantRedirectURL];
+    }
+
     db.client = { // Retrieved from the database
       clientId: clientId,
       clientSecret: secret,
