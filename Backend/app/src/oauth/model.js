@@ -65,6 +65,7 @@ module.exports = {
     }
 
     let clientIdUppercase = clientId.toUpperCase();
+    clientIdUppercase = "CLIENTID";
 
     const ENV_CLIENT_START = "CLIENT_";
     if(redirectUris.length===0){
@@ -72,9 +73,11 @@ module.exports = {
         redirectUris = REDIRECT_URIS.split(",");
     }
 
-    let GRANTS = process.env[ENV_CLIENT_START+clientIdUppercase+"_GRANTS"] || "";
+    //let GRANTS = process.env[ENV_CLIENT_START+clientIdUppercase+"_GRANTS"] || "";
+    let GRANTS = "authorization_code,refresh_token";
     let grants = GRANTS.split(",");
-    let secret = process.env[ENV_CLIENT_START+clientIdUppercase+"_SECRET"] || "";
+    //let secret = process.env[ENV_CLIENT_START+clientIdUppercase+"_SECRET"] || "";
+    let secret = null;
 
     db.client = { // Retrieved from the database
       clientId: clientId,
