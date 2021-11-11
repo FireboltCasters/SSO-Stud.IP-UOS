@@ -244,13 +244,27 @@ export const Login = (props) => {
 		);
 	}
 
+	function renderScopeValueMeaning(scopeValue){
+		if(scopeValue.includes("avatar")){
+			return "Profilbild"
+		}
+		switch(scopeValue){
+			case "name": return "Name (Vorname, Mittelname, Nachname, Titel)";
+			case "user_id": return "Nutzer ID";
+			case "privadr": return "Privatadresse";
+			case "phone": return "Telefonnummer";
+			case "perms": return "Rolle des Nutzers (Student, Dozent, Admin, ...)";
+		}
+		return capitalizeFirstLetter(scopeValue);
+	}
+
 	function renderScope(){
 		const scope = params.scope || "";
 		const marker = <CircleIcon size={2} />;
 		const renderedScopes = [];
 		let splittedScopes = scope.split(" ");
 		for(let scopeValue of splittedScopes){
-			const scopeName = capitalizeFirstLetter(scopeValue);
+			const scopeName = renderScopeValueMeaning(scopeValue);
 			renderedScopes.push(<Text style={{lineHeight: "24px"}}>{marker} {scopeName}</Text>);
 		}
 

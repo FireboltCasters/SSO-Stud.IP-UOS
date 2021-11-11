@@ -32,6 +32,8 @@ const DebugControl = require('../utilities/debug.js')
 module.exports = {
   getClient: function (clientId, clientSecret) {
     // query db for details with client
+
+    // clientSecret may be null, because of authorization_code flow, https://www.oauth.com/oauth2-servers/single-page-apps/
     log({
       title: 'Get Client',
       parameters: [
@@ -45,21 +47,16 @@ module.exports = {
     // Since wildcards are not allowed/implemented
     // https://github.com/oauthjs/node-oauth2-server/issues/229
     // we will make a small hack, to allow for ourself redirects
-    const clientIdRedirectSplit = "$redirect=";
+    const redirectSplit = "$redirect=";
     const urlParsedSplit = "%24redirect%3D";
 
-    console.log("Check if Split inside?");
-    console.log(!!clientId);
-    console.log("clientId.includes(clientSecretRedirectSplit): "+ clientId.includes(clientIdRedirectSplit));
-    if(!!clientId && clientId.includes(urlParsedSplit)){
-      console.log("The client id is URL encoded!");
+    const redirectSplitEncoded = urlencode(redirectSplit, 'gbk')
+    if(!!clientId && clientId.includes(redirectSplitEncoded)){
       clientId = urlencode.decode(clientId, 'gbk');
-      console.log("decoded: "+clientId);
     }
 
-    if(!!clientId && clientId.includes(clientIdRedirectSplit)){ //check if our split word is found
-      console.log("Split is inside");
-      let splits = clientId.split(clientIdRedirectSplit); //split there
+    if(!!clientId && clientId.includes(redirectSplit)){ //check if our split word is found
+      let splits = clientId.split(redirectSplit); //split there
       console.log(splits);
       let filteredMeantClientId = splits[0]; //get the meant secret
       clientId = filteredMeantClientId;
@@ -68,15 +65,16 @@ module.exports = {
     }
 
     let clientIdUppercase = clientId.toUpperCase();
-    
+
+    const ENV_CLIENT_START = "CLIENT_";
     if(redirectUris.length===0){
-        let REDIRECT_URIS = process.env["CLIENT_"+clientIdUppercase+"_REDICRECT_URIS"] || "";
+        let REDIRECT_URIS = process.env[ENV_CLIENT_START+clientIdUppercase+"_REDICRECT_URIS"] || "";
         redirectUris = REDIRECT_URIS.split(",");
     }
 
-    let GRANTS = process.env["CLIENT_"+clientIdUppercase+"_GRANTS"] || "";
+    let GRANTS = process.env[ENV_CLIENT_START+clientIdUppercase+"_GRANTS"] || "";
     let grants = GRANTS.split(",");
-    let secret = process.env["CLIENT_"+clientIdUppercase+"_SECRET"] || "";
+    let secret = process.env[ENV_CLIENT_START+clientIdUppercase+"_SECRET"] || "";
 
     db.client = { // Retrieved from the database
       clientId: clientId,

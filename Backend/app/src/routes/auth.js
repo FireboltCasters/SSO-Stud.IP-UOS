@@ -6,13 +6,14 @@ const oauthServer = require('../oauth/server.js')
 
 const DebugControl = require('../utilities/debug.js')
 
-const AUTH_METHOD = async (username, password) => {
+const AUTH_METHOD = async (username, password, scope) => {
   const domain = UrlHelper.STUDIP_DOMAIN_UNI_OSNABRUECK;
 
   try {
     const client = await Connector.getClient(domain, username, password);
     const user = client.getUser();
     // OpenID Idea
+    /**
     user.profile = {
       name: user.name.formatted,
       family_name: user.name.family,
@@ -23,8 +24,14 @@ const AUTH_METHOD = async (username, password) => {
       updated_at: ""
     }
     user.first_name = user.name.given;
+    */
+    let filteredUser = {};
+    let scopeKeys = scope.split(" ");
+    for(let scopeValue of scopeKeys){
+        filteredUser[scopeValue] = user[scopeValue];
+    }
 
-    return user;
+    return filteredUser;
   } catch (err) {
     console.log('Authentification: error');
     console.log(err);
@@ -36,16 +43,11 @@ const AUTH_METHOD = async (username, password) => {
 const router = express.Router() // Instantiate a new router
 
 router.get('/authParams', (req,res) => {  // send back a simple form for the oauth
-  console.log("Auth authParams");
-  console.log(req.url);
   res.status(200);
   res.json({"username":"string","password":"password"});
 })
 
 router.get('/', (req,res) => {  // send back a simple form for the oauth
-  console.log("Auth get");
-  console.log(req.url);
-  console.log(req.query);
   let urlAdaption = "";
   let query = req.query;
   let keys = Object.keys(query);
@@ -65,14 +67,16 @@ router.post('/authorize', async (req,res,next) => {
     'response_type',
     'grant_type',
     'state',
+    'scope',
   ]
       .map(a => `${a}=${req.body[a]}`)
       .join('&')
 
-  const {username, password} = req.body;
+  let {username, password, scope} = req.body;
+  scope = scope || "";
 
   try{
-    let user = await AUTH_METHOD(username, password);
+    let user = await AUTH_METHOD(username, password, scope);
     req.body.user = user;
     return next()
   } catch (err){

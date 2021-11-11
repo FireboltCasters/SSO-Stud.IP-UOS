@@ -5,7 +5,7 @@ const levels = {
   HIGH: 3,
 }
 
-let level = levels.HIGH
+let level = levels.NONE
 
 module.exports = {
   levels,
@@ -39,6 +39,7 @@ module.exports = {
       console.group()
       console.log('Query:', req.query)
       console.log('Body:', req.body)
+      console.log("Headers:", req.headers);
       console.groupEnd()
       return next()
     }
