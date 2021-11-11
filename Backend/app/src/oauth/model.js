@@ -1,5 +1,6 @@
 // See https://oauth2-server.readthedocs.io/en/latest/model/spec.html for what you can do with this
 const crypto = require('crypto')
+const urlencode = require('urlencode');
 const db = { // Here is a fast overview of what your db model should look like
   authorizationCode: {
     authorizationCode: '', // A string that contains the code
@@ -39,24 +40,43 @@ module.exports = {
       ]
     })
 
-    let clientIdUppercase = clientId.toUpperCase();
-    let REDIRECT_URIS = process.env["CLIENT_"+clientIdUppercase+"_REDICRECT_URIS"] || "";
-    let redirectUris = REDIRECT_URIS.split(",");
-    let GRANTS = process.env["CLIENT_"+clientIdUppercase+"_GRANTS"] || "";
-    let grants = GRANTS.split(",");
-    let secret = process.env["CLIENT_"+clientIdUppercase+"_SECRET"] || "";
+    let redirectUris = [];
 
     // Since wildcards are not allowed/implemented
     // https://github.com/oauthjs/node-oauth2-server/issues/229
     // we will make a small hack, to allow for ourself redirects
-    const clientSecretRedirecrtSplit = "&redirect=";
-    if(clientSecret.includes(clientSecretRedirecrtSplit)){ //check if our split word is found
-      let splits = clientSecret.split(clientSecretRedirecrtSplit); //split there
-      let filteredMeantSecret = splits[0]; //get the meant secret
-      clientSecret = filteredMeantSecret;
+    const clientIdRedirectSplit = "$redirect=";
+    const urlParsedSplit = "%24redirect%3D";
+
+    console.log("Check if Split inside?");
+    console.log(!!clientId);
+    console.log("clientId.includes(clientSecretRedirectSplit): "+ clientId.includes(clientIdRedirectSplit));
+    if(!!clientId && clientId.includes(urlParsedSplit)){
+      console.log("The client id is URL encoded!");
+      clientId = urlencode.decode(clientId, 'gbk');
+      console.log("decoded: "+clientId);
+    }
+
+    if(!!clientId && clientId.includes(clientIdRedirectSplit)){ //check if our split word is found
+      console.log("Split is inside");
+      let splits = clientId.split(clientIdRedirectSplit); //split there
+      console.log(splits);
+      let filteredMeantClientId = splits[0]; //get the meant secret
+      clientId = filteredMeantClientId;
       let filteredMeantRedirectURL = splits[1]; //get the redirect url we want
       redirectUris = [filteredMeantRedirectURL];
     }
+
+    let clientIdUppercase = clientId.toUpperCase();
+    
+    if(redirectUris.length===0){
+        let REDIRECT_URIS = process.env["CLIENT_"+clientIdUppercase+"_REDICRECT_URIS"] || "";
+        redirectUris = REDIRECT_URIS.split(",");
+    }
+
+    let GRANTS = process.env["CLIENT_"+clientIdUppercase+"_GRANTS"] || "";
+    let grants = GRANTS.split(",");
+    let secret = process.env["CLIENT_"+clientIdUppercase+"_SECRET"] || "";
 
     db.client = { // Retrieved from the database
       clientId: clientId,
@@ -64,6 +84,17 @@ module.exports = {
       grants: grants,
       redirectUris: redirectUris ,
     }
+
+    log({
+      title: 'Get Client - Resulting Client',
+      parameters: [
+        { name: 'clientId:', value: db.client.clientId },
+        { name: 'clientSecret', value: db.client.clientSecret },
+	{ name: 'grants', value: db.client.grants },
+	{ name: 'redirectUris', value: db.client.redirectUris },
+      ]
+    })
+
     return new Promise(resolve => {
       resolve(db.client)
     })
