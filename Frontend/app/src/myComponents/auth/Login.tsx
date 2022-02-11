@@ -166,8 +166,6 @@ export const Login = (props) => {
 		}
 
 		let authParamKeys = Object.keys(inputvalues);
-		console.log("authParams: ");
-		console.log(inputvalues);
 		for(let authParamKey of authParamKeys){
 			let paramValue = inputvalues[authParamKey];
 			inputs.push(<input className='form-control' name={authParamKey} value={paramValue}/>)
