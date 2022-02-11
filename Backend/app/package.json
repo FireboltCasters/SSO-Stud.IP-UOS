@@ -51,7 +51,7 @@
     "oauth2-server": "^3.0.1",
     "rimraf": "^3.0.2",
     "sso-oauth2-server": "^0.0.10",
-    "studip-api": "^1.0.3",
+    "studip-api": "1.0.3",
     "ts-jest": "^27.0.3",
     "ts-node": "^10.0.0",
     "typescript": "^4.3.5",
